@@ -1,16 +1,55 @@
 import axios from "axios";
+import { BASE_URL } from "./apiEndPoints";
 
 const axiosConfig = axios.create({
-    baseURL : "localhost:8080/api/v1.0",
-    headers:{
-        "Content-Type" : "application/json",
-        Accept: "application/json"
+    baseURL: BASE_URL,
+    headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    },
+});
+
+// list of endpoints that do NOT require token
+const excludeEndPoints = ["/login", "/register", "/status", "/activate", "/health"];
+
+// request interceptor
+axiosConfig.interceptors.request.use(
+    (config) => {
+        const shouldSkipToken = excludeEndPoints.some((endpoint) =>
+            config.url?.includes(endpoint)
+        );
+
+        if (!shouldSkipToken) {
+            const accessToken = localStorage.getItem("token");
+            if (accessToken) {
+                config.headers.Authorization = `Bearer ${accessToken}`;
+            }
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
     }
-})
+);
 
-//list of end points not require auth
-const excludeEndPoints = ["/login","register","status","/activate","/health"];
+// response interceptor
+axiosConfig.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response) {
+            if (error.response.status === 401) {
+                window.location.href = "/login";
+            } else if (error.response.status === 500) {
+                console.error("Server error. Please try again later.");
+            }
+        } else if (error.code === "ECONNABORTED") {
+            console.error("Request timeout. Please try again");
+        }
 
+        return Promise.reject(error);
+    }
+);
 
-// request intercepter
-axiosConfig.interceptors.request.use()
+export default axiosConfig;
