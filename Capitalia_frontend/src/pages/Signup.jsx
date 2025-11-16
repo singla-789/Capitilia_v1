@@ -2,6 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import Input from "../components/input";
+import { validateEmail } from "../util/validation.js";
+import axiosConfig from "../util/axiosConfig.jsx";
+import { API_ENDPOINTS } from "../util/apiEndPoints.js";
+import toast from "react-hot-toast";
+import { LoaderCircle } from "lucide-react";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -9,11 +14,52 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    if (!fullName.trim()) {
+      setIsLoading(false);
+      return setError("Please enter your Full Name.");
+    }
+
+    if (!validateEmail(email)) {
+      setIsLoading(false);
+      return setError("Please enter your valid email.");
+    }
+
+    if (!password.trim()) {
+      setIsLoading(false);
+      return setError("Please enter your password");
+    }
+
+    // If all validations pass
+    setError("");
+
+    try {
+      const response = await axiosConfig.post(API_ENDPOINTS.REGISTER, {
+        fullName,
+        email,
+        password,
+      });
+      if (response.status == 201) {
+        toast.success("Profile created successfully");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("Something went wrong", err);
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="h-screen w-full relative flex items-center justify-center overflow-hidden">
-
       {/* Background image */}
       <img
         src={assets.login_bg}
@@ -26,7 +72,8 @@ const Signup = () => {
 
       {/* Signup card */}
       <div className="relative z-10 w-full max-w-xl px-6">
-        <div className="
+        <div
+          className="
           bg-white/20
           backdrop-blur-xl
           border border-white/30
@@ -34,8 +81,8 @@ const Signup = () => {
           rounded-2xl
           p-10
           animate-fadeIn
-        ">
-
+        "
+        >
           {/* Heading */}
           <h3 className="text-3xl font-bold text-white text-center mb-3 tracking-wide">
             Create Your Account
@@ -45,8 +92,7 @@ const Signup = () => {
           </p>
 
           {/* Form */}
-          <form className="space-y-6">
-
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
                 value={fullName}
@@ -73,8 +119,16 @@ const Signup = () => {
               type="password"
             />
 
+            {error && (
+              <div className="flex items-center justify-center gap-2 bg-red-500/20 border border-red-400 text-red-200 px-4 py-3 rounded-lg backdrop-blur-md shadow-md">
+                <span className="text-lg">⚠️</span>
+                <p className="font-medium">{error}</p>
+              </div>
+            )}
+
             {/* Submit Button */}
             <button
+              disabled={isLoading}
               type="submit"
               className="
                 w-full py-3 
@@ -84,7 +138,14 @@ const Signup = () => {
                 shadow-lg hover:shadow-blue-500/30
               "
             >
-              Create Account
+              {isLoading ? (
+                <>
+                  <LoaderCircle className="animated-spin w-5 h-5" />
+                  Signing up..
+                </>
+              ) : (
+                "Sign up"
+              )}
             </button>
 
             {/* Footer */}
