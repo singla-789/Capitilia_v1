@@ -127,19 +127,10 @@ const Login = () => {
             <button
               disabled={isLoading}
               type="submit"
-              className="
-                w-full py-3 
-                bg-blue-600 hover:bg-blue-700 
-                text-white font-semibold rounded-xl
-                transition-all duration-200
-                shadow-lg hover:shadow-blue-500/30
-              "
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xltransition-all duration-200 shadow-lg hover:shadow-blue-500/30 flex items-center justify-center"
             >
               {isLoading ? (
-                <>
-                  <LoaderCircle className="animated-spin w-5 h-5" />
-                  Logging in..
-                </>
+                <LoaderCircle className="animate-spin w-6 h-6" />
               ) : (
                 "Login"
               )}

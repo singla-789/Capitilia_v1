@@ -7,12 +7,15 @@ import axiosConfig from "../util/axiosConfig.jsx";
 import { API_ENDPOINTS } from "../util/apiEndPoints.js";
 import toast from "react-hot-toast";
 import { LoaderCircle } from "lucide-react";
+import ProfilePhotoSelector from "../components/profilePhotoSelector.jsx";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+
+  const[profilePhoto,setProfilePhoto] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -93,6 +96,10 @@ const Signup = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+
+            <div className="flex justify-center mb-6">
+              <profilePhotoSelector image={profilePhoto} setImage={setProfilePhoto}/>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
                 value={fullName}
@@ -130,21 +137,12 @@ const Signup = () => {
             <button
               disabled={isLoading}
               type="submit"
-              className="
-                w-full py-3 
-                bg-blue-600 hover:bg-blue-700 
-                text-white font-semibold rounded-xl
-                transition-all duration-200
-                shadow-lg hover:shadow-blue-500/30
-              "
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xltransition-all duration-200 shadow-lg hover:shadow-blue-500/30 flex items-center justify-center"
             >
               {isLoading ? (
-                <>
-                  <LoaderCircle className="animated-spin w-5 h-5" />
-                  Signing up..
-                </>
+                <LoaderCircle className="animate-spin w-6 h-6" />
               ) : (
-                "Sign up"
+                "SignUp"
               )}
             </button>
 
