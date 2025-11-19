@@ -31,4 +31,4 @@ const uploadProfileImage = async (image) => {
 };
 
 
-export default uploadProfileImage();
+export default uploadProfileImage;
