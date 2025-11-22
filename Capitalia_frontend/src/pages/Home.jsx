@@ -1,6 +1,15 @@
+
+import DashBoard from "../components/dashBoard";
+import Menubar from "../components/MenuBar";
+
 const Home = () => {
+
+    
+
     return(
-        <div>Home</div>
+        <div>
+            <DashBoard/>
+        </div>
     )
 }
 
