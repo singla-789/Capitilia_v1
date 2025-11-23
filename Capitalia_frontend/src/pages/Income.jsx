@@ -1,7 +1,9 @@
 import DashBoard from "../components/dashBoard";
+import { useUser } from "../Hook/useUser";
 const Income = () => {
+    useUser();
     return (
-        <DashBoard>
+        <DashBoard activeMenu="Income">
                 this is incomes
             </DashBoard>
     )

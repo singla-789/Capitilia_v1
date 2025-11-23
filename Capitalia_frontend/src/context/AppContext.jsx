@@ -5,17 +5,14 @@ export const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  const clearUser  = () => {
+  const clearUser = () => {
     setUser(null);
-  }
-
-  const contextValue = {
-    user,
-    setUser,
-    clearUser,
+    localStorage.removeItem("token");   // only token is removed
   };
 
   return (
-    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ user, setUser, clearUser }}>
+      {children}
+    </AppContext.Provider>
   );
 };

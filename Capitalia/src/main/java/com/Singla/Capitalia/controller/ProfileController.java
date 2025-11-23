@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -50,11 +51,12 @@ public class ProfileController {
         }
     }
 
-    @GetMapping("/{email}")
-    public  ResponseEntity<ProfileDto> getPublicProfile(@PathVariable String email){
-        ProfileDto profile = profileService.getPublicProfile(email);
-        return ResponseEntity.ok(profile);
+    @GetMapping("/profile")
+    public ResponseEntity<ProfileDto> getLoggedUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(profileService.getPublicProfile(email));
     }
+
 
     @GetMapping("/test")
     public String test(){
