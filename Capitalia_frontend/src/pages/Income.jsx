@@ -1,6 +1,9 @@
+import DashBoard from "../components/dashBoard";
 const Income = () => {
     return (
-        <div>Income</div>
+        <DashBoard>
+                this is incomes
+            </DashBoard>
     )
 }
 

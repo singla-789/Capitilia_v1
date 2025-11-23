@@ -1,6 +1,6 @@
 
 import DashBoard from "../components/dashBoard";
-import Menubar from "../components/MenuBar";
+
 
 const Home = () => {
 
@@ -8,7 +8,9 @@ const Home = () => {
 
     return(
         <div>
-            <DashBoard/>
+            <DashBoard>
+                this is home page.
+            </DashBoard>
         </div>
     )
 }

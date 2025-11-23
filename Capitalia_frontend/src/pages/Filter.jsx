@@ -1,6 +1,9 @@
+import DashBoard from "../components/dashBoard";
 const Filter = () => {
     return (
-        <div>Filter</div>
+        <DashBoard>
+                this is filters
+            </DashBoard>
     )
 }
 

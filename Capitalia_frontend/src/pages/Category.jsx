@@ -1,8 +1,9 @@
+import DashBoard from "../components/dashBoard";
 const Category = () => {
     return(
-        <div>
-            Category
-        </div>
+        <DashBoard>
+                this is category
+            </DashBoard>
     )
 }
 
