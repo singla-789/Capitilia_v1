@@ -1,6 +1,6 @@
 import { Layers2, Pencil } from "lucide-react";
 
-const CategoryList = ({ categories, onEditCategory, onDeleteCategory }) => {
+const CategoryList = ({ categories, onEditCategory}) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
       {/* Header */}
