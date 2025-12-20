@@ -18,7 +18,6 @@ public class IncomeController {
 
     @Autowired
     private final IncomeService incomeService;
-
     @PostMapping
     public ResponseEntity<IncomeDto> addExpense(@RequestBody IncomeDto dto){
         IncomeDto saved = incomeService.addIncome(dto);
