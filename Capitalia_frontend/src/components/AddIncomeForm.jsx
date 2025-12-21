@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EmojiPickerPopup from "./EmojiPickerPopup";
 import Input from "./input";
 import { Loader2, LoaderCircle } from "lucide-react";
@@ -30,6 +30,12 @@ const AddIncomeForm = ({ onAddIncome, categories }) => {
         setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if(categories.length > 0 && !income.categoryId){
+        setIncome((prev) => ({...prev,categoryId:categories[0].id}))
+    }
+  },[categories,income.categoryId]);
 
   return (
     <div>

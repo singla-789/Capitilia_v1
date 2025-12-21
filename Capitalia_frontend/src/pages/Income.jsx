@@ -8,6 +8,8 @@ import { Plus } from "lucide-react";
 import Modal from "../components/Modal";
 import toast from "react-hot-toast";
 import AddIncomeForm from "../components/AddIncomeForm";
+import DeleteAlert from "../components/DeleteAlert";
+import IncomeOverview from "../components/IncomeOverview";
 const Income = () => {
   useUser();
   const [incomeData, setIncomeData] = useState([]);
@@ -63,51 +65,64 @@ const Income = () => {
   const hanndleAddIncome = async (income) => {
     const { name, amount, date, icon, categoryId } = income;
     //validation
-    if(!name.trim()){
+    if (!name.trim()) {
       toast.error("please Enter the name");
       return;
     }
-    if(!amount || isNaN(amount) || Number(amount) <=0){
+    if (!amount || isNaN(amount) || Number(amount) <= 0) {
       toast.error("Amount should be a valid number grater tha 0.");
       return;
     }
-    if(!date){
+    if (!date) {
       toast.error("Date is required");
       return;
     }
 
-    const today = new Date().toISOString().split('T')[0];
-    if(date>today){
+    const today = new Date().toISOString().split("T")[0];
+    if (date > today) {
       toast.error("date cannot be in the future");
       return;
     }
 
-    if(!categoryId){
+    if (!categoryId) {
       toast.error("Please select a category");
       return;
     }
 
     // add income
     try {
-      const response = await axiosConfig.post(API_ENDPOINTS.ADD_INCOMES,{
+      const response = await axiosConfig.post(API_ENDPOINTS.ADD_INCOMES, {
         name,
-        amount : Number(amount),
+        amount: Number(amount),
         date,
         icon,
-        categoryId
-      })
+        categoryId,
+      });
 
-      if(response.status == 201){
+      if (response.status == 201) {
         setOpenAddIncomeModal(false);
         toast.success("Income added successfully");
         fetchIncomeDetails();
         fetchIncomeCategories();
       }
     } catch (error) {
-      console.log('Error adding income',error);
-      toast.error(error.response?.data?.message || "Failed to save the income"); 
+      console.log("Error adding income", error);
+      toast.error(error.response?.data?.message || "Failed to save the income");
     }
   };
+
+  // Delete income
+  const deleteIncome = async (id) => {
+    try {
+      const response = await axiosConfig.delete(API_ENDPOINTS.DELETE_INCOME(id));
+      setopenDeleteAlert({show: false , data : null});
+      toast.success("Income deleted Successfully");
+      fetchIncomeDetails(); 
+    } catch (error) {
+      console.log("error deleteing the icome",error);
+      toast.error(error.response?.data?.message || "Failed to delete the Income")
+    }
+  }
 
   useEffect(() => {
     fetchIncomeDetails();
@@ -127,11 +142,12 @@ const Income = () => {
               <Plus size={15} className="text-lg" />
               Add Income
             </button>
+            <IncomeOverview/>
           </div>
 
           <IncomeList
             transactions={incomeData}
-            onDelete={(id) => console.log("deleteing the income", id)}
+            onDelete={(id) => setopenDeleteAlert({ show: true, data: id })}
           />
 
           {/* add income modal */}
@@ -143,6 +159,19 @@ const Income = () => {
             <AddIncomeForm
               onAddIncome={(income) => hanndleAddIncome(income)}
               categories={categories}
+            />
+          </Modal>
+
+          {/* Delete income model */}
+          <Modal
+            isOpen={openDeleteAlert.show}
+            onClose={() => setopenDeleteAlert({ show: false, data: null })}
+            title="Delete alert"
+          >
+            <DeleteAlert
+              content="Are you sure you want to delete this item? This action cannot be undone."
+              onDelete={() => deleteIncome(openDeleteAlert.data)}
+              onCancel={() => setopenDeleteAlert({ show: false, data: null })}
             />
           </Modal>
         </div>
