@@ -3,7 +3,7 @@ import TransactionInfoCard from "./TransactionInfoCard";
 import moment from "moment";
 import { useState } from "react";
 
-const IncomeList = ({ transactions = [], onDelete, onDownload, onEmail }) => {
+const ExpenseList = ({ transactions = [], onDelete, onDownload, onEmail }) => {
   const [emailLoading, setEmailLoading] = useState(false);
   const [downloadLoading, setDownloadLoading] = useState(false);
 
@@ -31,7 +31,7 @@ const IncomeList = ({ transactions = [], onDelete, onDownload, onEmail }) => {
     <div className="rounded-xl bg-white p-4 shadow-sm">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h5 className="text-lg font-semibold text-gray-800">Income Sources</h5>
+        <h5 className="text-lg font-semibold text-gray-800">Expense Sources</h5>
 
         <div className="flex items-center gap-2">
           {/* Email Button */}
@@ -92,23 +92,23 @@ const IncomeList = ({ transactions = [], onDelete, onDownload, onEmail }) => {
         </div>
       </div>
 
-      {/* Income List */}
+      {/* Expense List */}
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
         {transactions.length > 0 ? (
-          transactions.map((income) => (
+          transactions.map((expense) => (
             <TransactionInfoCard
-              key={income.id}
-              title={income.name}
-              icon={income.icon}
-              date={moment(income.date).format("Do MMM YYYY")}
-              amount={income.amount}
-              type="income"
-              onDelete={() => onDelete(income.id)}
+              key={expense.id}
+              title={expense.name}
+              icon={expense.icon}
+              date={moment(expense.date).format("Do MMM YYYY")}
+              amount={expense.amount}
+              type="expense"
+              onDelete={() => onDelete(expense.id)}
             />
           ))
         ) : (
           <p className="col-span-full text-center text-sm text-gray-400 py-6">
-            No income records found
+            No expense records found
           </p>
         )}
       </div>
@@ -116,4 +116,4 @@ const IncomeList = ({ transactions = [], onDelete, onDownload, onEmail }) => {
   );
 };
 
-export default IncomeList;
+export default ExpenseList;

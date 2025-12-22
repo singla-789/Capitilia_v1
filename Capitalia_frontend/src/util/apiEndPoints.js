@@ -15,6 +15,13 @@ export const API_ENDPOINTS = {
   DELETE_INCOME : (id) => `/incomes/${id}`,
   INCOME_EXCEL_DOWNLOAD : "/excel/download/income",
   EMAIL_INCOME : "/email/income-excel",
+  GET_ALL_EXPENSE : "/expenses",
+  DELETE_EXPENSE : (id) => `/expenses/${id}`,
+  ADD_EXPENSE : "/expenses",
+  EXPENSE_EXCEL_DOWNLOAD : "/excel/download/expense",
+  EMAIL_EXPENSE : "/email/expense-excel",
+  APPLY_FILTER : "/filter",
+  DASHBOARD_DATA : "/dashboard",
   UPLOAD_IMAGE:
     `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
 };

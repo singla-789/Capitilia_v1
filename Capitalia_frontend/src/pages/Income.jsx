@@ -45,7 +45,6 @@ const Income = () => {
   };
 
   // fetch category for income
-
   const fetchIncomeCategories = async () => {
     try {
       const response = await axiosConfig.get(
@@ -187,6 +186,7 @@ const Income = () => {
             />
           </div>
 
+          {/* income list */}
           <IncomeList
             transactions={incomeData}
             onDelete={(id) => setopenDeleteAlert({ show: true, data: id })}
