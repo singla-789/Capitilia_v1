@@ -1,46 +1,118 @@
 import { Download, Mail } from "lucide-react";
 import TransactionInfoCard from "./TransactionInfoCard";
 import moment from "moment";
-const IncomeList = ({ transactions, onDelete }) => {
+import { useState } from "react";
+
+const IncomeList = ({ transactions = [], onDelete, onDownload, onEmail }) => {
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
+
+  const handleEmail = async () => {
+    if (!onEmail) return;
+    setEmailLoading(true);
+    try {
+      await onEmail();
+    } finally {
+      setEmailLoading(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!onDownload) return;
+    setDownloadLoading(true);
+    try {
+      await onDownload();
+    } finally {
+      setDownloadLoading(false);
+    }
+  };
+
   return (
-    <div className="card p-4 rounded-xl shadow-sm bg-white">
+    <div className="rounded-xl bg-white p-4 shadow-sm">
+      {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h5 className="text-lg font-semibold text-gray-800">Income Sources</h5>
+        <h5 className="text-lg font-semibold text-gray-800">
+          Income Sources
+        </h5>
+
         <div className="flex items-center gap-2">
+          {/* Email Button */}
           <button
-            className="card-btn flex items-center gap-1 px-3 py-1.5 
-                   text-sm font-medium rounded-lg 
-                   hover:bg-gray-100 transition 
-                   focus:outline-none focus:ring-2 focus:ring-blue-300"
+            disabled={emailLoading}
+            onClick={handleEmail}
+            className={`
+              flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg
+              border border-gray-200 transition-all
+              ${
+                emailLoading
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "hover:bg-gray-100 text-gray-700"
+              }
+              focus:outline-none focus:ring-2 focus:ring-blue-300
+            `}
           >
-            <Mail size={15} />
-            <span>Email</span>
+            {emailLoading ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
+                Sending…
+              </>
+            ) : (
+              <>
+                <Mail size={15} />
+                Email
+              </>
+            )}
           </button>
+
+          {/* Download Button */}
           <button
-            className="card-btn flex items-center gap-1 px-3 py-1.5 
-                   text-sm font-medium rounded-lg 
-                   hover:bg-gray-100 transition 
-                   focus:outline-none focus:ring-2 focus:ring-blue-300"
+            disabled={downloadLoading}
+            onClick={handleDownload}
+            className={`
+              flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg
+              border border-gray-200 transition-all
+              ${
+                downloadLoading
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "hover:bg-gray-100 text-gray-700"
+              }
+              focus:outline-none focus:ring-2 focus:ring-blue-300
+            `}
           >
-            <Download size={15} />
-            <span>Download</span>
+            {downloadLoading ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
+                Downloading…
+              </>
+            ) : (
+              <>
+                <Download size={15} />
+                Download
+              </>
+            )}
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {/* display incomes */}
-        {transactions?.map((income) => (
-          <TransactionInfoCard
-            key={income.id}
-            title={income.name}
-            icon={income.icon}
-            date={moment(income.date).format("Do MMM YYYY")}
-            amount={income.amount}
-            type="income"
-            onDelete={() => onDelete(income.id)}
-          />
-        ))}
+      {/* Income List */}
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+        {transactions.length > 0 ? (
+          transactions.map((income) => (
+            <TransactionInfoCard
+              key={income.id}
+              title={income.name}
+              icon={income.icon}
+              date={moment(income.date).format("Do MMM YYYY")}
+              amount={income.amount}
+              type="income"
+              onDelete={() => onDelete(income.id)}
+            />
+          ))
+        ) : (
+          <p className="col-span-full text-center text-sm text-gray-400 py-6">
+            No income records found
+          </p>
+        )}
       </div>
     </div>
   );

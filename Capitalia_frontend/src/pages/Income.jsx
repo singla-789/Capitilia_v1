@@ -114,15 +114,61 @@ const Income = () => {
   // Delete income
   const deleteIncome = async (id) => {
     try {
-      const response = await axiosConfig.delete(API_ENDPOINTS.DELETE_INCOME(id));
-      setopenDeleteAlert({show: false , data : null});
+      const response = await axiosConfig.delete(
+        API_ENDPOINTS.DELETE_INCOME(id)
+      );
+      setopenDeleteAlert({ show: false, data: null });
       toast.success("Income deleted Successfully");
-      fetchIncomeDetails(); 
+      fetchIncomeDetails();
     } catch (error) {
-      console.log("error deleteing the icome",error);
-      toast.error(error.response?.data?.message || "Failed to delete the Income")
+      console.log("error deleteing the icome", error);
+      toast.error(
+        error.response?.data?.message || "Failed to delete the Income"
+      );
     }
-  }
+  };
+
+  // download income details
+  const handleDownloadIncomeDetail = async () => {
+    try {
+      const response = await axiosConfig.get(
+        API_ENDPOINTS.INCOME_EXCEL_DOWNLOAD,
+        { responseType: "blob" }
+      );
+
+      const fileName = "income_details.xlsx";
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName);
+
+      document.body.appendChild(link);
+      link.click(); // ✅ REQUIRED
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url); // ✅ revoke AFTER click
+
+      toast.success("Downloaded income details successfully");
+    } catch (error) {
+      console.error("Error in downloading the incomes", error);
+      toast.error(error.response?.data?.message || "Failed to download income");
+    }
+  };
+
+  // email incomes
+  const handleEmailIncomeDetails = async () => {
+    try {
+      const response = await axiosConfig.get(API_ENDPOINTS.EMAIL_INCOME);
+      if(response.status == 200){
+        toast.success("Incomes send to Registered mail");
+      }
+    } catch (error) {
+      console.error("failed to send email", error);
+      toast.error(error.response?.data?.message || "Failed to download incomes"); 
+    }
+  };
 
   useEffect(() => {
     fetchIncomeDetails();
@@ -135,13 +181,17 @@ const Income = () => {
         <div className="grid grid-cols-1 gap-6">
           <div>
             {/* overview for income with line chart */}
-            <IncomeOverview transactions={incomeData}
-            onAddIncome ={() => setOpenAddIncomeModal(true)}/>
+            <IncomeOverview
+              transactions={incomeData}
+              onAddIncome={() => setOpenAddIncomeModal(true)}
+            />
           </div>
 
           <IncomeList
             transactions={incomeData}
             onDelete={(id) => setopenDeleteAlert({ show: true, data: id })}
+            onDownload={handleDownloadIncomeDetail}
+            onEmail={handleEmailIncomeDetails}
           />
 
           {/* add income modal */}
